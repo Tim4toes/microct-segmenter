@@ -54,3 +54,9 @@ The plugin's installation and hardware documentation is published by the model d
 The GPU wheel versions are listed by PyTorch. [PyTorch release combinations](https://pytorch.org/get-started/previous-versions/)
 
 The bundled Windows Python is from Astral's python-build-standalone project. [Python runtime releases](https://github.com/astral-sh/python-build-standalone/releases)
+
+## Credits and licence
+
+MicroCT Segmenter uses nnInteractive by the MIC-DKFZ team for interactive segmentation through its napari plugin. MicroCT Segmenter adds a Windows launcher, mask coverage presets and CTAn-compatible export. If you use nnInteractive in research, please cite the original paper. [nnInteractive project and citation](https://github.com/MIC-DKFZ/nnInteractive#citation) · [napari plugin](https://github.com/MIC-DKFZ/napari-nninteractive)
+
+MicroCT Segmenter’s own code is licensed under [Apache License 2.0](LICENSE). The nnInteractive code and napari plugin are also distributed upstream under Apache 2.0. The official pretrained nnInteractive weights are published separately under CC BY-NC-SA 4.0. [Model card and licence](https://huggingface.co/MIC-DKFZ/nnInteractive)
