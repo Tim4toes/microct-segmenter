@@ -1,0 +1,11 @@
+name: microct-segmenter
+display_name: MicroCT Segmenter
+schema_version: 0.2.1
+contributions:
+  commands:
+    - id: microct-segmenter.make_widget
+      title: Open MicroCT Segmenter
+      python_name: microct_segmenter.gui:MicroCTWidget
+  widgets:
+    - command: microct-segmenter.make_widget
+      display_name: MicroCT Segmenter

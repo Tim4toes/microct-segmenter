@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "microct-segmenter"
+version = "1.2.0"
+description = "Native-grid napari segmentation and verified CTAn bitmap ROI export"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "Pillow>=10", "scipy>=1.10", "qtpy>=2.4", "napari>=0.5"]
+
+[project.scripts]
+microct-segmenter = "microct_segmenter.gui:main"
+
+[project.entry-points."napari.manifest"]
+microct-segmenter = "microct_segmenter:napari.yaml"
+
+[tool.setuptools.packages.find]
+include = ["microct_segmenter*"]
+
+[tool.setuptools.package-data]
+microct_segmenter = ["napari.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

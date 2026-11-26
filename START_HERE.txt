@@ -1,0 +1,20 @@
+MicroCT Segmenter 1.2.0 for Windows x64
+
+1. Extract the ZIP and double-click Start_MicroCT.bat. Accept setup.
+   The first setup downloads 3.8 GB. Allow about 15 GB free on your Windows
+   profile drive, plus space for model weights, dataset caches and projects.
+2. For daily use, run %LOCALAPPDATA%\MicroCTSegmenter\Start_MicroCT.bat.
+   You can create a desktop shortcut to that batch file.
+3. Choose Open dataset folder, then Open nnInteractive. Select the original
+   image, choose a local model and click Initialize. Use points or scribbles
+   in the nnInteractive panel. The model downloads on first use.
+4. Check the segmentation results, preview coverage and click Export CTAn
+   masks. The mask folder is beside the original dataset. Save editable
+   project if you plan to resume the work.
+5. To update a PC, close napari, open Update_MicroCT.cmd and select a newer
+   release ZIP. You can also choose a shared folder for update notifications.
+   Roll_Back_MicroCT.cmd switches to the preceding installed version.
+
+Normal setup runs under your Windows account. Local AI needs a compatible
+NVIDIA GPU and driver. The included README.md covers large datasets, CTAn
+import, offline use after setup and release updates.
