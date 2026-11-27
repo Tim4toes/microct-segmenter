@@ -32,6 +32,7 @@ DEFAULT_PRESET = "Saved default"
 CUSTOM_PRESET = "Custom"
 DEFAULT_KEY = "mask_coverage/default"
 PRESETS_KEY = "mask_coverage/presets"
+LOCK_KEY = "mask_coverage/locked"
 
 
 class Job(QThread):
@@ -206,6 +207,7 @@ class MicroCTWidget(QWidget):
         self.mode.addItem("Combine checked layers", "combined")
         self.mode.addItem("Separate folder for each layer", "layers")
         self.mode.addItem("Separate folder for each label ID", "ids")
+        self.mode.installEventFilter(self)
         form.addRow("Export:", self.mode)
         group_layout.addLayout(form)
         layout.addWidget(group)
@@ -225,6 +227,14 @@ class MicroCTWidget(QWidget):
         self.depth.addItem("1-bit BMP (CTAn monochrome ROI)", 1)
         self.depth.addItem("8-bit BMP (0 and 255)", 8)
         form.addRow("BMP format:", self.depth)
+        self._coverage_controls = (self.preset, self.dx, self.dy, self.dilation, self.depth)
+        for control in self._coverage_controls:
+            control.installEventFilter(self)
+        self.coverage_lock = QCheckBox("Lock mask coverage")
+        self.coverage_lock.setToolTip("Prevent changes to the preset, shifts, dilation and BMP format.")
+        self.coverage_lock.toggled.connect(self._set_coverage_locked)
+        self.coverage_lock.setChecked(self.settings_store.value(LOCK_KEY, False, type=bool))
+        form.addRow(self.coverage_lock)
         self.preset.currentIndexChanged.connect(self._preset_changed)
         for spin in (self.dx, self.dy, self.dilation):
             spin.valueChanged.connect(self._custom_preset)
@@ -264,6 +274,11 @@ class MicroCTWidget(QWidget):
             settings = self.preset.itemData(index)
             if settings is not None:
                 self._apply_coverage(settings)
+
+    def _set_coverage_locked(self, locked):
+        for control in self._coverage_controls:
+            control.setDisabled(locked)
+        self.settings_store.setValue(LOCK_KEY, locked)
 
     def _custom_preset(self, *_):
         self.preset.setCurrentText(CUSTOM_PRESET)
@@ -599,6 +614,12 @@ class MicroCTWidget(QWidget):
             QDesktopServices.openUrl(QUrl.fromLocalFile(str(self.last_output)))
 
     def eventFilter(self, watched, event):
+        if event.type() == QEvent.Type.Wheel and (
+            watched is getattr(self, "mode", None) or watched in getattr(self, "_coverage_controls", ())
+        ):
+            # Let the scroll area handle the wheel, even when an editor has focus.
+            event.ignore()
+            return True
         if watched is getattr(self, "_main_window", None) and event.type() == QEvent.Type.Close:
             if self.worker is not None:
                 event.ignore()
