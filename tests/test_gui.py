@@ -9,7 +9,8 @@ import pytest
 from PIL import Image
 import napari
 from qtpy.QtWidgets import QApplication, QInputDialog, QMessageBox, QProgressDialog, QPushButton
-from qtpy.QtCore import QSettings, Qt
+from qtpy.QtCore import QPoint, QPointF, QSettings, Qt
+from qtpy.QtGui import QWheelEvent
 
 from microct_segmenter.core import Correction, ValidationError, validate_layer_transform
 from microct_segmenter.gui import MicroCTWidget, Preview
@@ -79,10 +80,13 @@ def test_gui_open_export_preview_save_reopen(ui, tmp_path):
     assert path.exists()
     from microct_segmenter.core import read_project
     path, metadata, folder = read_project(path)
+    widget.coverage_lock.setChecked(True)
+    widget.dy.setValue(0)
     widget.load_selection(folder / 'scan00000000.bmp', path, metadata)
     wait_job(app, widget)
     assert np.array_equal(widget._items[0].data, labels)
     assert widget.correction() == Correction(2, 3, 0, 1)
+    assert not widget.dy.isEnabled()
     widget.load_selection(source)
     wait_job(app, widget)
     assert widget.correction() == Correction(2, 0, 0, 1)
@@ -127,6 +131,44 @@ def test_named_coverage_and_default_persist_separately(ui, monkeypatch):
         reopened.depth.setCurrentIndex(reopened.depth.findData(8))
         assert reopened.preset.currentText() == "Custom"
         assert not failures
+    finally:
+        viewer.close()
+
+
+def test_editors_ignore_wheel_events(ui):
+    app, _, widget, _ = ui
+    # Check focused controls too. That is where a wheel movement used to change coverage.
+    for control in (widget.mode, widget.preset, widget.dx, widget.dy, widget.dilation, widget.depth):
+        control.setFocus()
+        center = control.rect().center()
+        wheel = QWheelEvent(QPointF(center), QPointF(control.mapToGlobal(center)),
+                            QPoint(), QPoint(0, -120), Qt.MouseButton.NoButton,
+                            Qt.KeyboardModifier.NoModifier, Qt.ScrollPhase.NoScrollPhase, False)
+        app.sendEvent(control, wheel)
+        assert not wheel.isAccepted()
+        assert widget.correction() == Correction(0, 0, 0, 1)
+        assert widget.preset.currentText() == "Native pixels: no correction"
+        assert widget.mode.currentData() == "combined"
+
+
+def test_coverage_lock_persists_and_leaves_export_available(ui):
+    _, _, widget, _ = ui
+    button = next(b for b in widget.findChildren(QPushButton) if b.text() == "Export CTAn masks")
+    widget.dy.setValue(3)
+    widget.coverage_lock.click()
+    assert widget.correction() == Correction(0, 3, 0, 1)
+    assert all(not control.isEnabled() for control in (widget.preset, widget.dx, widget.dy, widget.dilation, widget.depth))
+    assert button.isEnabled()
+
+    viewer = napari.Viewer(show=False)
+    reopened = MicroCTWidget(viewer)
+    try:
+        assert reopened.coverage_lock.isChecked()
+        assert not reopened.preset.isEnabled()
+        reopened.coverage_lock.click()
+        reopened.dy.setValue(2)
+        assert reopened.dy.isEnabled()
+        assert reopened.correction() == Correction(0, 2, 0, 1)
     finally:
         viewer.close()
 
