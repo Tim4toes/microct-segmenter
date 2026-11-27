@@ -1,5 +1,9 @@
 # MicroCT Segmenter validation
 
+## Version 1.2.1
+
+On Linux, 63 tests passed and the optional nnInteractive plugin test was skipped because the plugin was absent. Tests confirmed that the lock persists, export stays available, and project and dataset settings still load while the controls are locked. A native wheel test on the virtual X display scrolled the panel over all five mask coverage controls and the export mode selector without changing their values, with the lock on and off.
+
 ## Version 1.2.0
 
 The GUI tests used napari with a virtual X display on Linux. 61 tests passed. The optional test that opens the real nnInteractive plugin was skipped because that plugin was absent from the test environment. The coverage tests verified persistence across app instances, selection of a named preset, both BMP bit depths, the default for new datasets, and restoration of a saved project's own coverage settings. Package versions are pinned to the same builds as in 1.1.0.

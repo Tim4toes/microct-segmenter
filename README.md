@@ -4,7 +4,7 @@ Open a reconstructed image series in napari, use nnInteractive to segment bones,
 
 ## Install and open
 
-Download `MicroCT_Segmenter_v1.2.0_Windows_x64.zip` from [Releases](https://github.com/Tim4toes/microct-segmenter/releases).
+Download `MicroCT_Segmenter_v1.2.1_Windows_x64.zip` from [Releases](https://github.com/Tim4toes/microct-segmenter/releases).
 
 1. Extract the release ZIP on a 64-bit Windows 10 or 11 PC. Double-click **Start_MicroCT.bat** in the extracted folder and accept **Install** when prompted. The installer runs as the current Windows user. Python is included. The first setup downloads the locked Windows packages, checks their SHA-256 hashes, then tests the installed environment.
 2. Watch the console for download and installation progress. On a fresh installation the packages total 3.78 GB. Updates reuse the packages already downloaded by setup. Allow approximately 15 GB free on the Windows profile drive for setup. Model weights, dataset caches and editable projects need additional space. Interrupted transfers can resume on the next launch.
@@ -27,6 +27,7 @@ A **1-bit BMP** mask is uncompressed, with black background and white foreground
 
 - **Save as default** saves the current X shift, Y shift, dilation and BMP format for new datasets in your Windows account. Until you save a default, new datasets use native pixels (zero shift and dilation) and 1-bit BMP.
 - **Save preset…** adds the current values as a named entry in the **Preset** menu. Enter an existing name to replace that preset after confirmation.
+- **Lock mask coverage** prevents editing the preset, shifts, dilation and BMP format. The lock stays on until you clear it, including after you restart the app. The mouse wheel scrolls the panel over these controls even with the lock off.
 - Reopening an editable project restores the coverage values saved with the project. Select **Saved default** or a named preset to apply it to the open project.
 
 ## CTAn

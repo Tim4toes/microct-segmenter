@@ -1,4 +1,4 @@
-MicroCT Segmenter 1.2.0 for Windows x64
+MicroCT Segmenter 1.2.1 for Windows x64
 
 1. Extract the ZIP and double-click Start_MicroCT.bat. Accept setup.
    The first setup downloads 3.8 GB. Allow about 15 GB free on your Windows
