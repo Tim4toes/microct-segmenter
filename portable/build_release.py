@@ -20,7 +20,7 @@ HERE = Path(__file__).resolve().parent
 SOURCE = HERE.parent
 PYTHON_TARBALL = "cpython-3.12.16+20261124-x86_64-pc-windows-msvc-install_only_stripped.tar.gz"
 PYTHON_SHA = "96694b50dcfde13d56e40346ddaa552a9cd650290e9b933cecf83c1d82226960"
-SOURCE_FILES = ["pyproject.toml", "launch_microct.py", "README.md", "START_HERE.txt", "Start_MicroCT.bat",
+SOURCE_FILES = ["pyproject.toml", "launch_microct.py", "README.md", "LICENSE", "START_HERE.txt", "Start_MicroCT.bat",
                 "microct_segmenter/__init__.py", "microct_segmenter/core.py", "microct_segmenter/gui.py",
                 "microct_segmenter/napari.yaml", "tests/test_core.py", "tests/test_gui.py", "tests/test_launcher.py",
                 "portable/build_release.py", "portable/manage.py", "portable/runtime_check.py",
@@ -84,7 +84,7 @@ def build(runtime, output, go, windres):
             archive.writestr("microct-release.json", json.dumps(header, indent=2))
             for name, flag in [("Update_MicroCT.cmd", "--updates"), ("Roll_Back_MicroCT.cmd", "--rollback")]:
                 archive.writestr(name, f'@echo off\r\n"%~dp0{exe.name}" {flag}\r\n')
-            for name in ["START_HERE.txt", "README.md", "VALIDATION.md", "Start_MicroCT.bat"]:
+            for name in ["START_HERE.txt", "README.md", "LICENSE", "VALIDATION.md", "Start_MicroCT.bat"]:
                 archive.write(SOURCE / name, name)
             archive.write(goroot / "LICENSE", "notices/Go-LICENSE.txt")
             with tarfile.open(runtime) as rt:
